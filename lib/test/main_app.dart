@@ -1,4 +1,5 @@
 // import 'package:final_project/test/login/presentation/pages/login_page.dart';
+import 'package:final_project/test/home/presentation/pages/home_page.dart';
 import 'package:final_project/test/login/presentation/pages/login_page.dart';
 import 'package:final_project/test/signup/presentation/pages/signup_page.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,7 @@ class MainApp extends StatelessWidget {
           builder: (_, _) => SignUpPage(),
           name: "signup",
         ),
+        GoRoute(path: "/home", builder: (_, _) => HomePage(), name: "home"),
       ],
     );
     return MaterialApp.router(routerConfig: router);

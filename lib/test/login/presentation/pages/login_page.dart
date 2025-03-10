@@ -82,109 +82,146 @@ class _BodyLoginWidgetState extends State<BodyLoginWidget> with LoginMixin {
   Widget build(BuildContext context) {
     final bloc = context.read<LoginBloc>();
 
-    return BlocBuilder<LoginBloc, LoginState>(
-      builder: (context, state) {
-        final bool isValidForm =
-            validateEmail(state.model.email) == null &&
-            validatePassword(state.model.password) == null;
-
-        return Expanded(
-          child: Container(
-            // margin: EdgeInsets.symmetric(horizontal: 32.0),
-            margin: EdgeInsets.only(right: 32.0, left: 32.0, top: 80.0),
-            child: Form(
-              key: keyForm,
-              child: Column(
-                children: [
-                  // Text(state.model.email),
-                  TextFormField(
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    onChanged:
-                        (value) => setState(() {
-                          bloc.add(EmailChangedEvent(email: value));
-                        }),
-                    // initialValue: "Usuario",
-                    validator: validateEmail,
-                    decoration: InputDecoration(
-                      labelText: "Email",
-                      icon: Icon(Icons.person),
-                      hintText: "Ingrese su usuario",
-                    ),
-                    keyboardType: TextInputType.emailAddress,
-                  ),
-                  SizedBox(height: 20.0),
-                  TextFormField(
-                    onChanged:
-                        (value) => setState(() {
-                          bloc.add(PasswordChangedEvent(password: value));
-                        }),
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    validator: validatePassword,
-                    obscureText: !_showPassword,
-                    decoration: InputDecoration(
-                      labelText: "Contraseña",
-                      icon: Icon(Icons.lock),
-                      hintText: "Ingrese su contraseña",
-                      // suffixIcon: GestureDetector(
-                      suffixIcon: InkWell(
-                        onTap: () {
-                          // En caso de que no sea nulo, cancelamos el timer (primera vez)
-                          // Igual, cancelamos el timer
-                          _autoShowTimer?.cancel();
-
-                          if (!_showPassword) {
-                            _autoShowTimer = Timer(Duration(seconds: 3), () {
-                              setState(() {
-                                _showPassword = false;
-                              });
-                            });
-                          }
-
-                          setState(() {
-                            _showPassword = !_showPassword;
-                            //   Future.delayed(
-                            //     Duration(seconds: 3),
-                            //     () => {
-                            //       setState(() {
-                            //         _showPassword = false;
-                            //       }),
-                            //     },
-                            //   );
-                            // }),
-                          }); // setState
+    return BlocListener<LoginBloc, LoginState>(
+      listener: (context, state) {
+        switch (state) {
+          case InitialState() || DataUpdateState():
+            break;
+          case LoginSuccessState():
+            GoRouter.of(context).pushReplacementNamed("home");
+            break;
+          case LoginErrorState():
+            print("Error al iniciar sesión");
+            showDialog(
+              context: context,
+              builder:
+                  (BuildContext context) => AlertDialog(
+                    title: const Text('AlertDialog Title'),
+                    content: Text(state.message),
+                    actions: <Widget>[
+                      TextButton(
+                        child: const Text('Aceptar'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
                         },
-                        child: Icon(
-                          _showPassword
-                              ? Icons.visibility
-                              : Icons.visibility_off,
+                      ),
+                    ],
+                  ),
+            );
+            break;
+          // default:
+        }
+      },
+      child: BlocBuilder<LoginBloc, LoginState>(
+        builder: (context, state) {
+          final bool isValidForm =
+              validateEmail(state.model.email) == null &&
+              validatePassword(state.model.password) == null;
+
+          if (state is LoginSuccessState) {
+            WidgetsBinding.instance?.addPostFrameCallback((_) {
+              GoRouter.of(context).pushReplacementNamed("home");
+            });
+          }
+
+          return Expanded(
+            child: Container(
+              // margin: EdgeInsets.symmetric(horizontal: 32.0),
+              margin: EdgeInsets.only(right: 32.0, left: 32.0, top: 80.0),
+              child: Form(
+                key: keyForm,
+                child: Column(
+                  children: [
+                    // Text(state.model.email),
+                    TextFormField(
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      onChanged:
+                          (value) => setState(() {
+                            bloc.add(EmailChangedEvent(email: value));
+                          }),
+                      // initialValue: "Usuario",
+                      validator: validateEmail,
+                      decoration: InputDecoration(
+                        labelText: "Email",
+                        icon: Icon(Icons.person),
+                        hintText: "Ingrese su usuario",
+                      ),
+                      keyboardType: TextInputType.emailAddress,
+                    ),
+                    SizedBox(height: 20.0),
+                    TextFormField(
+                      onChanged:
+                          (value) => setState(() {
+                            bloc.add(PasswordChangedEvent(password: value));
+                          }),
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: validatePassword,
+                      obscureText: !_showPassword,
+                      decoration: InputDecoration(
+                        labelText: "Contraseña",
+                        icon: Icon(Icons.lock),
+                        hintText: "Ingrese su contraseña",
+                        // suffixIcon: GestureDetector(
+                        suffixIcon: InkWell(
+                          onTap: () {
+                            // En caso de que no sea nulo, cancelamos el timer (primera vez)
+                            // Igual, cancelamos el timer
+                            _autoShowTimer?.cancel();
+
+                            if (!_showPassword) {
+                              _autoShowTimer = Timer(Duration(seconds: 3), () {
+                                setState(() {
+                                  _showPassword = false;
+                                });
+                              });
+                            }
+
+                            setState(() {
+                              _showPassword = !_showPassword;
+                              //   Future.delayed(
+                              //     Duration(seconds: 3),
+                              //     () => {
+                              //       setState(() {
+                              //         _showPassword = false;
+                              //       }),
+                              //     },
+                              //   );
+                              // }),
+                            }); // setState
+                          },
+                          child: Icon(
+                            _showPassword
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  SizedBox(height: 20.0),
-                  FilledButton(
-                    // onPressed: () => {keyForm.currentState?.validate()},
-                    onPressed:
-                        isValidForm
-                            ? () => {
-                              bloc.add(SubmitEvent()),
-                              // print("esta haciendo login");
-                            }
-                            : null,
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: Text(
-                        "Iniciar Sesión",
-                        textAlign: TextAlign.center,
+                    SizedBox(height: 20.0),
+                    FilledButton(
+                      // onPressed: () => {keyForm.currentState?.validate()},
+                      onPressed:
+                          isValidForm
+                              ? () => {
+                                bloc.add(SubmitEvent()),
+                                // print("esta haciendo login");
+                              }
+                              : null,
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: Text(
+                          "Iniciar Sesión",
+                          textAlign: TextAlign.center,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }

@@ -32,6 +32,15 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   void _submitEvent(SubmitEvent event, Emitter<LoginState> emit) {
     final bool result = _loginUseCase.invoke(state.model);
-    print(result);
+    late final LoginState newState;
+    if (result) {
+      newState = LoginSuccessState(model: state.model);
+    } else {
+      newState = LoginErrorState(
+        model: state.model,
+        message: "Error al iniciar sesión",
+      );
+    }
+    emit(newState);
   }
 }
