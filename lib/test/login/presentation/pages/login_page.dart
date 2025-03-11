@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:final_project/test/di/dependency_injection.dart';
 import 'package:final_project/test/login/presentation/bloc/login_bloc.dart';
 import 'package:final_project/test/login/presentation/bloc/login_events.dart';
 import 'package:final_project/test/login/presentation/bloc/login_state.dart';
@@ -14,7 +15,7 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
-      value: LoginBloc(),
+      value: DependencyInjection.serviceLocator.get<LoginBloc>(),
       child: Scaffold(
         // Para que cuando aparezca el teclado, no desplace el contenido, sino
         // que el teclado quede arriba del contenido
