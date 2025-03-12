@@ -12,7 +12,8 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final router = GoRouter(
       routes: [
-        GoRoute(path: "/", builder: (_, _) => LoginPage(), name: "login"),
+        GoRoute(path: "/", builder: (_, _) => HomePage(), name: "login"),
+        // GoRoute(path: "/", builder: (_, _) => LoginPage(), name: "login"),
         GoRoute(
           path: "/sign-up",
           builder: (_, _) => SignUpPage(),

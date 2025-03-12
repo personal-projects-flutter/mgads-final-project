@@ -92,7 +92,6 @@ class _BodyLoginWidgetState extends State<BodyLoginWidget> with LoginMixin {
             GoRouter.of(context).pushReplacementNamed("home");
             break;
           case LoginErrorState():
-            print("Error al iniciar sesión");
             showDialog(
               context: context,
               builder:
