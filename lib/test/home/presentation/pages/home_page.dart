@@ -2,6 +2,7 @@ import 'package:final_project/test/di/dependency_injection.dart';
 import 'package:final_project/test/home/presentation/bloc/home_bloc.dart';
 import 'package:final_project/test/home/presentation/bloc/home_event.dart';
 import 'package:final_project/test/home/presentation/bloc/home_state.dart';
+import 'package:final_project/test/home/presentation/model/product_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -49,6 +50,7 @@ class _ProductListWidgetState extends State<ProductListWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final bloc = context.read<HomeBloc>();
     return BlocConsumer<HomeBloc, HomeState>(
       listener: (context, state) {
         switch (state) {
@@ -65,7 +67,8 @@ class _ProductListWidgetState extends State<ProductListWidget> {
                       TextButton(
                         child: const Text('Aceptar'),
                         onPressed: () {
-                          Navigator.of(context).pop();
+                          Navigator.pop(context, "Ok");
+                          bloc.add(GetProductEvent());
                         },
                       ),
                     ],
@@ -90,8 +93,10 @@ class _ProductListWidgetState extends State<ProductListWidget> {
             return Center(child: Text("No hay productos"));
           case LoadDataState():
             return ListView.builder(
-              itemCount: 2,
-              itemBuilder: (context, index) => ProductItemWidget(),
+              itemCount: state.model.products.length,
+              itemBuilder:
+                  (context, index) =>
+                      ProductItemWidget(state.model.products[index]),
             );
           default:
             return Container();
@@ -102,28 +107,54 @@ class _ProductListWidgetState extends State<ProductListWidget> {
 }
 
 class ProductItemWidget extends StatelessWidget {
-  const ProductItemWidget({super.key});
+  final ProductModel product;
+
+  const ProductItemWidget(this.product, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Row(
-        children: [
-          Image.asset('assets/box.png', width: 150.0),
-
-          // Image.network(
-          //   "https://cdn-icons-png.freepik.com/256/10266/10266140.png",
-          //   width: 150.0,
-          //   fit: BoxFit.contain,
-          // ),
-          SizedBox(
-            height: 150.0,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [Text("Producto 1"), Text("Precio: \$100.00")],
+    final bloc = context.read<HomeBloc>();
+    return InkWell(
+      onLongPress: () {
+        showDialog(
+          context: context,
+          builder:
+              (BuildContext context) => AlertDialog(
+                title: const Text('Eliminación de Producto'),
+                content: Text(
+                  "Esta seguro de eliminar el prodcto?: ${product.name}",
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    child: const Text('Ok'),
+                    onPressed: () {
+                      Navigator.pop(context, 'Ok');
+                      bloc.add(DeleteProductEvent(id: product.id));
+                    },
+                  ),
+                  TextButton(
+                    child: const Text('Cancelar'),
+                    onPressed: () {
+                      Navigator.pop(context, 'Cancelar');
+                    },
+                  ),
+                ],
+              ),
+        );
+      },
+      child: Card(
+        child: Row(
+          children: [
+            Image.network(product.urImage, width: 150.0, fit: BoxFit.contain),
+            SizedBox(
+              height: 150.0,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [Text(product.name), Text("\$${product.price}")],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

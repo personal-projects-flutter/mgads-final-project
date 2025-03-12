@@ -52,7 +52,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       if (result) {
         _getProductEvent(GetProductEvent(), emit);
       } else {
-        throw Exception("Error al eliminar el producto");
+        throw Exception();
       }
     } catch (e) {
       newState = HomeErrorState(

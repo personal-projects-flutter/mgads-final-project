@@ -8,6 +8,10 @@ class GetProductsUseCase {
 
   List<ProductModel> invoke() {
     final List<ProductModel> products = [];
+    final result = homeRepository.getProducts();
+    for (var element in result) {
+      products.add(element.toProductModel());
+    }
     return products;
   }
 }
