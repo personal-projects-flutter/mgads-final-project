@@ -45,12 +45,12 @@ class _ProductListWidgetState extends State<ProductListWidget> {
   void initState() {
     super.initState();
     final bloc = context.read<HomeBloc>();
-    bloc.add(GetProductEvent());
   }
 
   @override
   Widget build(BuildContext context) {
     final bloc = context.read<HomeBloc>();
+    bloc.add(GetProductEvent());
     return BlocConsumer<HomeBloc, HomeState>(
       listener: (context, state) {
         switch (state) {
@@ -80,13 +80,16 @@ class _ProductListWidgetState extends State<ProductListWidget> {
       builder: (context, state) {
         switch (state) {
           case LoadingState():
-            return Center(
-              child: Column(
-                children: [
-                  CircularProgressIndicator(),
-                  SizedBox(height: 20.0),
-                  Text(state.message),
-                ],
+            return Expanded(
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircularProgressIndicator(),
+                    SizedBox(height: 20.0),
+                    Text(state.message),
+                  ],
+                ),
               ),
             );
           case EmptyState():

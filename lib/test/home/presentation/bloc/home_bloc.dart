@@ -18,13 +18,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<DeleteProductEvent>(_deleteProductEvent);
   }
 
-  void _getProductEvent(GetProductEvent event, Emitter<HomeState> emit) {
+  void _getProductEvent(GetProductEvent event, Emitter<HomeState> emit) async {
     late HomeState newState;
     try {
       newState = LoadingState();
       emit(newState);
 
-      final List<ProductModel> results = getProductsUseCase.invoke();
+      final List<ProductModel> results = await getProductsUseCase.invoke();
 
       if (results.isEmpty) {
         newState = EmptyState();

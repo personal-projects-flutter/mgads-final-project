@@ -6,11 +6,17 @@ class GetProductsUseCase {
 
   GetProductsUseCase({required this.homeRepository});
 
-  List<ProductModel> invoke() {
+  Future<List<ProductModel>> invoke() async {
     final List<ProductModel> products = [];
-    final result = homeRepository.getProducts();
-    for (var element in result) {
-      products.add(element.toProductModel());
+
+    try {
+      final result = await homeRepository.getProducts();
+
+      for (var element in result) {
+        products.add(element.toProductModel());
+      }
+    } catch (e) {
+      throw Exception("Error: $e");
     }
     return products;
   }

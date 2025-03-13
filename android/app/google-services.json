@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "536459341028",
+    "project_id": "storeapp-121e0",
+    "storage_bucket": "storeapp-121e0.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:536459341028:android:efb0067c8d94d553c210f1",
+        "android_client_info": {
+          "package_name": "co.edu.unab.mgads.final_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBvn7xJlBoM42OnyzXuRPSAqe30QakPvaA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

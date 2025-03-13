@@ -1,3 +1,5 @@
+import 'package:dio/dio.dart';
+import 'package:final_project/test/core/data/remote/services/product_service.dart';
 import 'package:final_project/test/home/data/repository/home_repository_impl.dart';
 import 'package:final_project/test/home/domain/repository/home_repository.dart';
 import 'package:final_project/test/home/domain/use_case/delete_products_use_case.dart';
@@ -14,6 +16,11 @@ final class DependencyInjection {
   static final serviceLocator = GetIt.instance;
 
   static setup() {
+    serviceLocator.registerSingleton<Dio>(Dio());
+    serviceLocator.registerFactory<ProductService>(
+      () => ProductService(dio: serviceLocator.get()),
+    );
+
     serviceLocator.registerFactory<LoginRepository>(
       () => LoginRepositoryImpl(),
     );
@@ -24,7 +31,12 @@ final class DependencyInjection {
       () => LoginBloc(loginUseCase: serviceLocator.get()),
     );
 
-    serviceLocator.registerFactory<HomeRepository>(() => HomeRepositoryImpl());
+    // serviceLocator.registerFactory<HomeRepository>(
+    //   () => HomeRepositoryImpl(productService: serviceLocator.get()),
+    // );
+    serviceLocator.registerFactory<HomeRepository>(
+      () => HomeRepositoryImpl(productService: serviceLocator.get()),
+    );
     serviceLocator.registerFactory<GetProductsUseCase>(
       () => GetProductsUseCase(homeRepository: serviceLocator.get()),
     );
