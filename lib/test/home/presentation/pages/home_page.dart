@@ -5,6 +5,7 @@ import 'package:final_project/test/home/presentation/bloc/home_state.dart';
 import 'package:final_project/test/home/presentation/model/product_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -27,6 +28,11 @@ class HomePage extends StatelessWidget {
             ],
           ),
           body: ProductListWidget(),
+          floatingActionButton: FloatingActionButton(
+            backgroundColor: Colors.orangeAccent,
+              onPressed: ()=> GoRouter.of(context).pushNamed("form-product"),
+            child: Icon(Icons.add),
+          ),
         ),
       ),
     );

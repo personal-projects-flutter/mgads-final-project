@@ -22,4 +22,12 @@ class ProductDataModel {
   ProductEntity toEntity() {
     return ProductEntity(id: id, name: name, price: price, urImage: imageUrl);
   }
+
+  Map<String, dynamic> toJson(){
+    return <String, dynamic>{
+      "name": name,
+      "price": price,
+      "image": imageUrl
+    };
+  }
 }

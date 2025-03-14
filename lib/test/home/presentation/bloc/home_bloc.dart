@@ -42,13 +42,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     emit(newState);
   }
 
-  void _deleteProductEvent(DeleteProductEvent event, Emitter<HomeState> emit) {
+  void _deleteProductEvent(DeleteProductEvent event, Emitter<HomeState> emit) async {
     late HomeState newState;
     try {
       newState = LoadingState();
       emit(newState);
 
-      final bool result = deleteProductsUseCase.invoke(event.id);
+      final bool result = await deleteProductsUseCase.invoke(event.id);
       if (result) {
         _getProductEvent(GetProductEvent(), emit);
       } else {
@@ -59,7 +59,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         model: state.model,
         message: "Error al eliminar el producto",
       );
-      emit(newState);
     }
+    emit(newState);
   }
 }

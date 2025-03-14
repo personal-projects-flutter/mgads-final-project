@@ -1,5 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:final_project/test/core/data/remote/services/product_service.dart';
+import 'package:final_project/test/form_product/data/repository/form_product_repository_impl.dart';
+import 'package:final_project/test/form_product/domain/repository/form_product_repository.dart';
+import 'package:final_project/test/form_product/domain/use_case/add_product_use_case.dart';
+import 'package:final_project/test/form_product/presentation/bloc/form_product_bloc.dart';
 import 'package:final_project/test/home/data/repository/home_repository_impl.dart';
 import 'package:final_project/test/home/domain/repository/home_repository.dart';
 import 'package:final_project/test/home/domain/use_case/delete_products_use_case.dart';
@@ -47,6 +51,19 @@ final class DependencyInjection {
       () => HomeBloc(
         getProductsUseCase: serviceLocator.get(),
         deleteProductsUseCase: serviceLocator.get(),
+      ),
+    );
+
+
+    serviceLocator.registerFactory<FormProductRepository>(
+          () => FormProductRepositoryImpl(productService: serviceLocator.get()),
+    );
+    serviceLocator.registerFactory<AddProductUseCase>(
+          () => AddProductUseCase(formProductRepository: serviceLocator.get()),
+    );
+    serviceLocator.registerFactory<FormProductBloc>(
+          () => FormProductBloc(
+        addProductUseCase: serviceLocator.get()
       ),
     );
   }

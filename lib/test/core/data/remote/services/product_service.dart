@@ -4,8 +4,8 @@ import 'package:final_project/test/core/data/remote/dto/product_data_model.dart'
 final class ProductService {
   final Dio dio;
   final String _baseUrl =
-      // 'https://storeappdamo2024-default-rtdb.firebaseio.com';
-      'https://storeappmgads2022-b465d-default-rtdb.firebaseio.com/products';
+      'https://storeappmgads2022-b465d-default-rtdb.firebaseio.com/';
+      //'https://storeappmgads2022-b465d-default-rtdb.firebaseio.com';
 
   // 1:15:00
 
@@ -16,7 +16,7 @@ final class ProductService {
     try {
       // final Response<Map> response = await dio.get("$_baseUrl/products.json");
       final Response<Map> response = await dio.get(
-        "https://storeappmgads2022-b465d-default-rtdb.firebaseio.com/products.json",
+        "$_baseUrl/products.json",
       );
       if (response.data != null) {
         response.data?.forEach((key, value) {
@@ -28,4 +28,24 @@ final class ProductService {
     }
     return products;
   }
+
+  Future<bool> delete(String id) async {
+    try{
+      await dio.delete("$_baseUrl/products/$id.json");
+    }catch (e){
+      throw(Exception(e));
+    }
+    return true;
+  }
+
+  Future<bool> add(ProductDataModel product) async {
+    try{
+      await dio.post("$_baseUrl/products.json", data: product.toJson());
+    }catch (e){
+      throw(Exception(e));
+    }
+    return true;
+  }
+
+
 }
