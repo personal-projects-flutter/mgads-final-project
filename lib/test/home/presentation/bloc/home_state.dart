@@ -10,6 +10,10 @@ final class EmptyState extends HomeState {
   EmptyState() : super(model: HomeModel(products: []));
 }
 
+final class LogoutState extends HomeState {
+  LogoutState() : super(model: HomeModel(products: []));
+}
+
 final class LoadingState extends HomeState {
   final String message;
   LoadingState({this.message = "Cargando productos..."})

@@ -1,3 +1,5 @@
+import 'package:final_project/test/core/domain/entity/product_entity.dart';
+
 class ProductModel {
   final String id;
   final String name;
@@ -10,4 +12,8 @@ class ProductModel {
     required this.urImage,
     required this.price,
   });
+
+  ProductEntity toEntity() {
+    return ProductEntity(id: id, name: name, urImage: urImage, price: price);
+  }
 }

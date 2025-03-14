@@ -19,6 +19,11 @@ final class ProductEntity {
   }
 
   ProductDataModel toProductDataModel() {
-    return ProductDataModel(id: id, name: name, imageUrl: urImage, price: price);
+    return ProductDataModel(
+      id: id,
+      name: name,
+      imageUrl: urImage,
+      price: price,
+    );
   }
 }

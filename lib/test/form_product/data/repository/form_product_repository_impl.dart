@@ -11,11 +11,29 @@ class FormProductRepositoryImpl implements FormProductRepository {
 
   @override
   Future<bool> addProduct(ProductEntity productEntity) {
-    try{
+    try {
       return productService.add(productEntity.toProductDataModel());
-    }catch(e){
-      throw(Exception());
+    } catch (e) {
+      throw (Exception());
     }
+  }
 
+  @override
+  Future<ProductEntity> getProduct(String id) async {
+    try {
+      final response = await productService.get(id);
+      return response.toEntity();
+    } catch (e) {
+      throw (Exception());
+    }
+  }
+
+  @override
+  Future<bool> updateProduct(ProductEntity data) {
+    try {
+      return productService.update(data.toProductDataModel());
+    } catch (e) {
+      throw (Exception());
+    }
   }
 }

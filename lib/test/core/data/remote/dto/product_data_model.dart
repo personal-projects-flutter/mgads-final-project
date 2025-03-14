@@ -1,4 +1,5 @@
 import 'package:final_project/test/core/domain/entity/product_entity.dart';
+import 'package:final_project/test/home/presentation/model/product_model.dart';
 
 class ProductDataModel {
   final String id;
@@ -16,18 +17,18 @@ class ProductDataModel {
   ProductDataModel.fromJson(String this.id, Map<String, dynamic> json) {
     name = json['name'];
     price = json['price'];
-    imageUrl = json['url_image'];
+    imageUrl = json['image'];
   }
 
   ProductEntity toEntity() {
     return ProductEntity(id: id, name: name, price: price, urImage: imageUrl);
   }
 
-  Map<String, dynamic> toJson(){
-    return <String, dynamic>{
-      "name": name,
-      "price": price,
-      "image": imageUrl
-    };
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{"name": name, "price": price, "image": imageUrl};
+  }
+
+  ProductModel toModel() {
+    return ProductModel(id: id, name: name, price: price, urImage: imageUrl);
   }
 }

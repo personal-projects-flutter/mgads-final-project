@@ -29,8 +29,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     emit(newState);
   }
 
-  void _submitEvent(SubmitEvent event, Emitter<LoginState> emit) {
-    final bool result = loginUseCase.invoke(state.model);
+  void _submitEvent(SubmitEvent event, Emitter<LoginState> emit) async {
+    final bool result = await loginUseCase.invoke(state.model);
     late final LoginState newState;
     if (result) {
       newState = LoginSuccessState(model: state.model);

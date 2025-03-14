@@ -16,25 +16,62 @@ class HomePage extends StatelessWidget {
       child: BlocProvider.value(
         value: DependencyInjection.serviceLocator.get<HomeBloc>(),
         child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: Colors.purple,
-            title: Text(
-              "Listado de Productos",
-              style: TextStyle(color: Colors.white),
-            ),
-            actions: [
-              SizedBox(width: 15.0),
-              Icon(Icons.logout, color: Colors.white),
-            ],
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(60.0),
+            child: AppBarWidget(),
           ),
           body: ProductListWidget(),
           floatingActionButton: FloatingActionButton(
             backgroundColor: Colors.orangeAccent,
-              onPressed: ()=> GoRouter.of(context).pushNamed("form-product"),
+            onPressed: () => GoRouter.of(context).pushNamed("form-product"),
             child: Icon(Icons.add),
           ),
         ),
       ),
+    );
+  }
+}
+
+class AppBarWidget extends StatelessWidget {
+  const AppBarWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final bloc = context.read<HomeBloc>();
+    return AppBar(
+      backgroundColor: Colors.purple,
+      title: Text(
+        "Listado de Productos",
+        style: TextStyle(color: Colors.white),
+      ),
+      actions: [
+        SizedBox(width: 15.0),
+        InkWell(
+          onTap:
+              () => showDialog(
+                context: context,
+                builder:
+                    (BuildContext context) => AlertDialog(
+                      title: const Text('Cerrar sesión'),
+                      content: Text("Esta seguro que desea cerrar la sesión?"),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context, 'Ok');
+                            bloc.add(LogoutEvent());
+                          },
+                          child: const Text('Ok'),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.pop(context, 'Cancelar'),
+                          child: const Text('Cancelar'),
+                        ),
+                      ],
+                    ),
+              ),
+          child: Icon(Icons.logout, color: Colors.white),
+        ),
+      ],
     );
   }
 }
@@ -81,6 +118,9 @@ class _ProductListWidgetState extends State<ProductListWidget> {
                   ),
             );
             break;
+          case LogoutState():
+            GoRouter.of(context).goNamed("login");
+            break;
         }
       },
       builder: (context, state) {
@@ -124,6 +164,10 @@ class ProductItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final bloc = context.read<HomeBloc>();
     return InkWell(
+      onTap:
+          () => GoRouter.of(
+            context,
+          ).pushNamed("form-product-u", pathParameters: {"id": product.id}),
       onLongPress: () {
         showDialog(
           context: context,
@@ -135,17 +179,15 @@ class ProductItemWidget extends StatelessWidget {
                 ),
                 actions: <Widget>[
                   TextButton(
-                    child: const Text('Ok'),
                     onPressed: () {
                       Navigator.pop(context, 'Ok');
                       bloc.add(DeleteProductEvent(id: product.id));
                     },
+                    child: const Text('Ok'),
                   ),
                   TextButton(
+                    onPressed: () => Navigator.pop(context, 'Cancelar'),
                     child: const Text('Cancelar'),
-                    onPressed: () {
-                      Navigator.pop(context, 'Cancelar');
-                    },
                   ),
                 ],
               ),

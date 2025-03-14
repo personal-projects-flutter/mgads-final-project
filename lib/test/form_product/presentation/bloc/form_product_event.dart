@@ -12,7 +12,7 @@ final class PriceChangedEvent extends FormProductEvent {
   PriceChangedEvent({required this.price});
 }
 
-  final class UrlImageChangedEvent extends FormProductEvent {
+final class UrlImageChangedEvent extends FormProductEvent {
   final String urlImage;
 
   UrlImageChangedEvent({required this.urlImage});
@@ -22,9 +22,7 @@ final class SubmitEvent extends FormProductEvent {
   SubmitEvent();
 }
 
-  // final String email;
-  // final String password;
-
-  // SubmitEvent({required this.email, required this.password});
-  // SubmitEvent();
-
+final class GetProductEvent extends FormProductEvent {
+  final String id;
+  GetProductEvent(this.id);
+}

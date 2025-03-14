@@ -10,7 +10,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class FormProductPage extends StatelessWidget {
-  const FormProductPage({super.key});
+  final String? id;
+  const FormProductPage({super.key, this.id});
 
   @override
   Widget build(BuildContext context) {
@@ -22,21 +23,17 @@ class FormProductPage extends StatelessWidget {
         // Para que la vista no se ajuste al teclado cuando se muestre
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          title: Text("Agregar productos"),
+          title: Text(id == null ? "Agregar producto" : "Editar producto"),
         ),
-        body: Column(
-          children: [
-            BodyLoginWidget(),
-          ],
-        ),
+        body: Column(children: [BodyLoginWidget(id)]),
       ),
     );
   }
 }
 
-
 class BodyLoginWidget extends StatefulWidget {
-  BodyLoginWidget({super.key});
+  BodyLoginWidget(this.id, {super.key});
+  final String? id;
 
   @override
   State<BodyLoginWidget> createState() => _BodyLoginWidgetState();
@@ -50,6 +47,13 @@ class _BodyLoginWidgetState extends State<BodyLoginWidget> with LoginMixin {
   @override
   Widget build(BuildContext context) {
     final bloc = context.read<FormProductBloc>();
+    if (widget.id != null) {
+      bloc.add(GetProductEvent(widget.id!));
+    }
+
+    TextEditingController nameField = TextEditingController();
+    TextEditingController priceField = TextEditingController();
+    TextEditingController urlField = TextEditingController();
 
     return BlocListener<FormProductBloc, FormProductState>(
       listener: (context, state) {
@@ -82,6 +86,9 @@ class _BodyLoginWidgetState extends State<BodyLoginWidget> with LoginMixin {
       },
       child: BlocBuilder<FormProductBloc, FormProductState>(
         builder: (context, state) {
+          nameField.text = state.model.name;
+          priceField.text = state.model.price;
+          urlField.text = state.model.urlImage;
           return Expanded(
             child: Container(
               // margin: EdgeInsets.symmetric(horizontal: 32.0),
@@ -90,12 +97,12 @@ class _BodyLoginWidgetState extends State<BodyLoginWidget> with LoginMixin {
                 key: keyForm,
                 child: Column(
                   children: [
-                    // Text(state.model.email),
+                    Text(state.model.name),
                     TextFormField(
+                      controller: nameField,
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       onChanged:
-                          (value) => bloc.add(NameChangedEvent(name: value))
-                          ,
+                          (value) => bloc.add(NameChangedEvent(name: value)),
                       // initialValue: "Usuario",
                       decoration: InputDecoration(
                         labelText: "Name:",
@@ -106,6 +113,7 @@ class _BodyLoginWidgetState extends State<BodyLoginWidget> with LoginMixin {
                     ),
                     SizedBox(height: 20.0),
                     TextFormField(
+                      controller: priceField,
                       onChanged:
                           (value) => setState(() {
                             bloc.add(PriceChangedEvent(price: value));
@@ -119,6 +127,7 @@ class _BodyLoginWidgetState extends State<BodyLoginWidget> with LoginMixin {
                       ),
                     ),
                     TextFormField(
+                      controller: urlField,
                       onChanged:
                           (value) => setState(() {
                             bloc.add(UrlImageChangedEvent(urlImage: value));
@@ -134,13 +143,11 @@ class _BodyLoginWidgetState extends State<BodyLoginWidget> with LoginMixin {
                     SizedBox(height: 20.0),
                     FilledButton(
                       // onPressed: () => {keyForm.currentState?.validate()},
-                      onPressed: () => {
-                        bloc.add(SubmitEvent())
-                      },
+                      onPressed: () => {bloc.add(SubmitEvent())},
                       child: SizedBox(
                         width: double.infinity,
                         child: Text(
-                          "Crear",
+                          widget.id == null ? "Crear" : "Actualizar",
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -155,4 +162,3 @@ class _BodyLoginWidgetState extends State<BodyLoginWidget> with LoginMixin {
     );
   }
 }
-
